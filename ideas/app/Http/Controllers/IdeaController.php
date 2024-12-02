@@ -29,11 +29,11 @@ class IdeaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'idea' => ['required', 'min:3', 'max:240']
+            'content' => ['required', 'min:3', 'max:240']
         ]);
 
         Idea::create([
-            'content' => $request->idea
+            'content' => $request->content
         ]);
 
         return redirect()->route('dashboard.index')->with('success', 'Idea created Successfully!');
@@ -50,17 +50,25 @@ class IdeaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Idea $idea)
     {
-        //
+        $editing = true;
+        return view('ideas/show', compact('idea', 'editing'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Idea $idea)
     {
-        //
+        $request->validate([
+            'content' => ['required', 'min:3', 'max:240']
+        ]);
+
+        $idea->content = $request->content;
+        $idea->save();
+
+        return redirect()->route('ideas.show', $idea->id)->with('success', 'Idea updated Successfully!');;
     }
 
     /**
