@@ -42,9 +42,9 @@ class IdeaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Idea $idea)
     {
-        //
+        return view('ideas/show', compact('idea'));
     }
 
     /**
@@ -66,11 +66,9 @@ class IdeaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Idea $idea)
     {
-        Idea::where('id', $id)
-            ->firstOrFail()
-            ->delete();
+        $idea->delete();
 
         return redirect()->route('dashboard.index')->with('success', 'Idea deleted Successfully!');
     }
