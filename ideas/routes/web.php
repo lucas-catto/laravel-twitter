@@ -10,20 +10,22 @@ use App\Http\Controllers\ProfileController;
 
 Route::get('', [DashboardController::class, 'index'])->name('dashboard.index');
 
-Route::post('ideas', [IdeaController::class, 'store'])->name('ideas.store');
-Route::get('ideas/{idea}', [IdeaController::class, 'show'])->name('ideas.show');
-Route::get('ideas/edit/{idea}', [IdeaController::class, 'edit'])->name('ideas.edit')->middleware(['auth']);
-Route::put('ideas/{idea}', [IdeaController::class, 'update'])->name('ideas.update')->middleware(['auth']);
-Route::delete('ideas/{idea}', [IdeaController::class, 'destroy'])->name('ideas.destroy')->middleware(['auth']);
-
-Route::post('ideas/{idea}/comments', [CommentController::class, 'store'])->name('ideas.comments.store')->middleware(['auth']);
-
-Route::get('register', [AuthController::class, 'register'])->name('register');
-Route::post('register', [AuthController::class, 'store'])->name('register');
-
-Route::get('login', [AuthController::class, 'login'])->name('login');
-Route::post('login', [AuthController::class, 'authenticate']);
-Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+Route::group([
+    'middleware' => ['auth'],
+    'prefix' => 'ideas',
+    'as' => 'ideas.'
+], function() {
+    
+    Route::get('{idea}', [IdeaController::class, 'show'])->name('show'); // ->withoutMiddleware(['auth']);
+    
+    Route::group(['middleware' => ['auth']], function() {
+        Route::post('', [IdeaController::class, 'store'])->name('store'); // ->withoutMiddleware(['auth']);
+        Route::get('edit/{idea}', [IdeaController::class, 'edit'])->name('edit');
+        Route::put('{idea}', [IdeaController::class, 'update'])->name('update');
+        Route::delete('{idea}', [IdeaController::class, 'destroy'])->name('destroy');
+        Route::post('{idea}/comments', [CommentController::class, 'store'])->name('comments.store');
+    });
+});
 
 Route::get('terms', function() {
     return view('terms');
