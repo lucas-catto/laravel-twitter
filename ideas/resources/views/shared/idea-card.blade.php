@@ -3,21 +3,26 @@
         <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
                 <img style="width:50px" class="me-2 avatar-sm rounded-circle"
-                    src="https://api.dicebear.com/6.x/fun-emoji/svg?seed=Mario" alt="Mario Avatar">
+                    src="https://api.dicebear.com/6.x/fun-emoji/svg?seed={{ $idea->user->name }}" alt="{{ $idea->user->name }} Avatar">
                 <div>
-                    <h5 class="card-title mb-0"><a href="#"> Mario
-                        </a></h5>
+                    <h5 class="card-title mb-0">
+                        <a href="#">
+                            {{ $idea->user->name }}
+                        </a>
+                    </h5>
                 </div>
             </div>
 
-            <div>
-                <form action="{{ route('ideas.destroy', ['idea'=>$idea->id]) }}" method="post">
-                    @csrf
-                    @method('DELETE')
+            <div class="d-flex gap-1 align-items-center">
+                <a href="{{ route('ideas.show', $idea->id) }}">View</a>
+                @if (Auth::check() && Auth::user()->id == $idea->user->id)
                     <a href="{{ route('ideas.edit', $idea->id) }}">Edit</a>
-                    <a href="{{ route('ideas.show', $idea->id) }}">View</a>
-                    <button class="ms-1 btn btn-danger btn-sm">X</button>
-                </form>
+                    <form action="{{ route('ideas.destroy', ['idea'=>$idea->id]) }}" method="post">
+                        @csrf
+                        @method('DELETE')
+                        <button class="ms-1 btn btn-danger btn-sm">X</button>
+                    </form>
+                @endif
             </div>
         </div>
     </div>
